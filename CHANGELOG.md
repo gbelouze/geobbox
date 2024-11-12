@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fixed" and "Security".
 
-## pre-release
+## [0.0.3] - 2024-11-12
 
 ### Added
 
@@ -17,6 +17,7 @@ Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fi
 ### Fixed
 
 - Added `py.typed` to declare the package typed [c7988b5](https://github.com/gbelouze/geobbox/commit/c7988b532f495a09df8054e2849c576864d56eb3)
+- Relaxed `conda` dependencies [308d812](https://github.com/gbelouze/geobbox/commit/308d8128206f0a68ebaeb6be9d788b2284d62c2f)
 
 ## [0.0.2] - 2024-11-04
 
