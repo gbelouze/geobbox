@@ -21,6 +21,10 @@ repos:
         args: [--fix]
         # Run the formatter.
       - id: ruff-format
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.0
+    hooks:
+      - id: flake8
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.13.0
     hooks:

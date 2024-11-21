@@ -18,9 +18,13 @@ from .utm import _UTM_ZONE_LETTERS, UTM
 log = logging.getLogger(__name__)
 
 if (sys.version_info.major, sys.version_info.minor) < (3, 10):
-    from typing_extensions import Iterator, Optional, Self, TypeAlias
+    from collections.abc import Iterator
+    from typing import TypeAlias
+
+    from typing_extensions import Self
 else:
-    from typing import Iterator, Optional, Self, TypeAlias
+    from collections.abc import Iterator
+    from typing import Self, TypeAlias
 
 __all__ = ["WGS84", "GeoBoundingBox"]
 
@@ -37,7 +41,8 @@ WGS84 = CRS.from_epsg(4326)
 class GeoBoundingBox:
     """A georeferenced bounding box.
 
-    This is a Coordinate Reference System (crs) and the bounding box's left, bottom, right and top borders, expressed in that CRS.
+    This is a Coordinate Reference System (crs) and the bounding box's left, bottom,
+    right and top borders, expressed in that CRS.
 
     Attributes
     ----------
@@ -55,22 +60,16 @@ class GeoBoundingBox:
 
     def __post_init__(self):
         if self.left > self.right:
-            raise ValueError(
-                f"GeoBoundingBox is initialized with {self.left=} > {self.right=}"
-            )
+            raise ValueError(f"GeoBoundingBox is initialized with {self.left=} > {self.right=}")
         if self.bottom > self.top:
-            raise ValueError(
-                f"GeoBoundingBox is initialized with {self.bottom=} > {self.top=}"
-            )
+            raise ValueError(f"GeoBoundingBox is initialized with {self.bottom=} > {self.top=}")
 
     def __contains__(self, point: Coordinate) -> bool:
         """Whether a point is contained in the bounding box.
         Expects a point in northing/easting coordinate, in a CRS consistent with the bounding box.
         """
         northing, easting = point
-        return (
-            self.left <= easting <= self.right and self.bottom <= northing <= self.left
-        )
+        return self.left <= easting <= self.right and self.bottom <= northing <= self.left
 
     def __and__(self, other: Self) -> Self:
         """Intersection of bounding boxes. Emits a warning if the bboxes are not in the same CRS.
@@ -101,6 +100,13 @@ class GeoBoundingBox:
     def __iter__(self):
         """Iter over a GeoBoundingBox as if a (left, bottom, right, top) tuple
 
+        Yields
+        ------
+        left : float
+        bottom : float
+        right : float
+        top : float
+
         .. versionadded:: 0.0.2
 
         """
@@ -111,22 +117,30 @@ class GeoBoundingBox:
 
     @property
     def ul(self) -> Coordinate:
-        """Compute the coordinate of the upper-left corner of a bounding box, in northing/easting format."""
+        """Compute the coordinate of the upper-left corner of a bounding box,
+        in northing/easting format.
+        """
         return (self.top, self.left)
 
     @property
     def ur(self) -> Coordinate:
-        """Compute the coordinate of the upper-right corner of a bounding box, in northing/easting format."""
+        """Compute the coordinate of the upper-right corner of a bounding box,
+        in northing/easting format.
+        """
         return (self.top, self.right)
 
     @property
     def ll(self) -> Coordinate:
-        """Compute the coordinate of the lower-left corner of a bounding box, in northing/easting format."""
+        """Compute the coordinate of the lower-left corner of a bounding box,
+        in northing/easting format.
+        """
         return (self.bottom, self.left)
 
     @property
     def lr(self) -> Coordinate:
-        """Compute the coordinate of the lower-right corner of a bounding box, in northing/easting format."""
+        """Compute the coordinate of the lower-right corner of a bounding box,
+        in northing/easting format.
+        """
         return (self.bottom, self.right)
 
     @property
@@ -155,23 +169,19 @@ class GeoBoundingBox:
     @property
     def is_empty(self) -> bool:
         """Check if a bounding box has an empty interior."""
-        return bool(
-            (self.right - self.left) < _EPSILON or (self.top - self.bottom) < _EPSILON
-        )
+        return bool((self.right - self.left) < _EPSILON or (self.top - self.bottom) < _EPSILON)
 
     @property
     def is_not_empty(self) -> bool:
         """Check if a bounding box has a non empty interior."""
-        return bool(
-            (self.right - self.left) > _EPSILON and (self.top - self.bottom) > _EPSILON
-        )
+        return bool((self.right - self.left) > _EPSILON and (self.top - self.bottom) > _EPSILON)
 
     def with_(
         self,
-        left: Optional[float] = None,
-        bottom: Optional[float] = None,
-        right: Optional[float] = None,
-        top: Optional[float] = None,
+        left: float | None = None,
+        bottom: float | None = None,
+        right: float | None = None,
+        top: float | None = None,
     ) -> Self:
         """Returns a modification of the bounding box with specified changes."""
         return self.__class__(
@@ -242,7 +252,8 @@ class GeoBoundingBox:
         """
         if self.crs != other.crs:
             log.warn(
-                f"Containment test between bounding box in different CRS ({self.crs=}, {other.crs=})."
+                "Containment test between bounding box in different CRS "
+                f"({self.crs=}, {other.crs=})."
             )
             other = other.transform(self.crs)
         return (
@@ -272,8 +283,8 @@ class GeoBoundingBox:
         )
 
     def unbuffer(self, buff: float) -> Self:
-        """Returns a bounding box decreased by a given buffer in all directions, that is, the same bounding box with
-        its outer perimeter of given width removed.
+        """Returns a bounding box decreased by a given buffer in all directions, that is,
+        the same bounding box with its outer perimeter of given width removed.
 
         Parameters
         ----------
@@ -336,7 +347,8 @@ class GeoBoundingBox:
         Returns
         -------
         shapely.Polygon
-            The shapely polygon representing the bbox coordinates in its CRS or WGS84 (depending on `in_native_crs`).
+            The shapely polygon representing the bbox coordinates in its CRS or WGS84
+            (depending on `in_native_crs`).
 
         Warning
         -------
@@ -377,14 +389,11 @@ class GeoBoundingBox:
         """
         if not self.is_not_empty:
             log.warn("Transforming an empty GeoBoundingBox")
-            assert False
             return self.__class__(0, 0, 0, 0, dst_crs)
         left, bottom, right, top = warp.transform_bounds(
             self.crs, dst_crs, self.left, self.bottom, self.right, self.top
         )
-        return self.__class__(
-            left=left, bottom=bottom, right=right, top=top, crs=dst_crs
-        )
+        return self.__class__(left=left, bottom=bottom, right=right, top=top, crs=dst_crs)
 
     def shape(self, scale: int) -> tuple[int, int]:
         """Compute the shape that would have an image at resolution `scale` fitting the bbox.
@@ -472,9 +481,7 @@ class GeoBoundingBox:
         -------
         GeoBoundingBox
         """
-        return cls(
-            left=bbox.left, bottom=bbox.bottom, right=bbox.right, top=bbox.top, crs=crs
-        )
+        return cls(left=bbox.left, bottom=bbox.bottom, right=bbox.right, top=bbox.top, crs=crs)
 
     @classmethod
     def from_geofile(cls, path: Path) -> Self:
@@ -514,7 +521,12 @@ class GeoBoundingBox:
         return cls(left=left, bottom=bottom, right=right, top=top)
 
     def to_utms(self) -> Iterator[UTM]:
-        """Computes the UTM zones that the bounding box intersects."""
+        """Computes the UTM zones that the bounding box intersects.
+
+        Yields
+        ------
+        UTM
+        """
         bbox = self.transform(WGS84)
         zone_left = int(bbox.left // 6) + 31
         zone_right = int(bbox.right // 6) + 31

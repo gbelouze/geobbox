@@ -18,9 +18,7 @@ else:
 __all__ = ["UTM"]
 
 _UTM_ZONE_LETTERS = tuple(
-    char
-    for char in string.ascii_uppercase
-    if char not in ["A", "B", "I", "O", "Y", "Z"]
+    char for char in string.ascii_uppercase if char not in ["A", "B", "I", "O", "Y", "Z"]
 )
 
 
