@@ -16,7 +16,7 @@ from .utm import _UTM_ZONE_LETTERS, UTM
 
 log = logging.getLogger(__name__)
 
-if (sys.version_info.major, sys.version_info.minor) < (3, 10):
+if (sys.version_info.major, sys.version_info.minor) <= (3, 10):
     from collections.abc import Iterator
     from typing import TypeAlias
 
@@ -73,7 +73,7 @@ class GeoBoundingBox:
 
         """
         northing, easting = point
-        return self.left <= easting <= self.right and self.bottom <= northing <= self.left
+        return (self.left <= easting <= self.right) and (self.bottom <= northing <= self.top)
 
     def __and__(self, other: Self) -> Self:
         """Intersection of bounding boxes. Emits a warning if the bboxes are not in the same CRS.

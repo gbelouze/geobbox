@@ -86,6 +86,9 @@ line_length = 100
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+log_cli = true
+log_cli_level = "DEBUG"
+log_level = "DEBUG"
 
 [tool.mypy]
 python_version = "3.11"
