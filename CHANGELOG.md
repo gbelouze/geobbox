@@ -13,6 +13,7 @@ Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fi
 ### Added
 
 - Added `mypy` pre-commit hooks [ffa9ec6](https://github.com/gbelouze/geobbox/commit/ffa9ec6d15f1eddc28861cca12db9ce1d1788322)
+- Added `ruff` and `pydoclint` pre-commit hooks [f20c27d](https://github.com/gbelouze/geobbox/commit/f20c27ddb2a9292fb3a41e57c851b25310f8fa5c)
 
 ### Fixed
 
