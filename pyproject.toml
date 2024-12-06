@@ -6,9 +6,7 @@ build-backend = "flit_core.buildapi"
 name = "geobbox"
 readme = "README.md"
 description = "A Python library to manipulate georeferenced bounding boxes."
-authors = [
-    {name = "Gabriel Belouze", email = "gabriel@belouze.com"}
-]
+authors = [{ name = "Gabriel Belouze", email = "gabriel@belouze.com" }]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
@@ -16,18 +14,12 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11"
+    "Programming Language :: Python :: 3.11",
 ]
 requires-python = ">=3.11"
-license = {"file" = "LICENSE"}
+license = { "file" = "LICENSE" }
 dynamic = ["version"]
-dependencies = [
-    "earthengine-api",
-    "numpy",
-    "rasterio",
-    "shapely>=2.0.6",
-    "utm"
-]
+dependencies = ["earthengine-api", "numpy", "rasterio", "shapely>=2.0.6", "utm"]
 
 [tool.flit.module]
 name = "geobbox"
@@ -37,24 +29,60 @@ source = "https://github.com/gbelouze/geobbox"
 tracker = "https://github.com/gbelouze/geobbox/issues"
 
 [project.optional-dependencies]
-dev = [
-    "mypy",
-    "pytest",
-    "pre-commit",
+dev = ["mypy", "pytest", "pre-commit", "ruff", "pydoclint[flake8]"]
+doc = ["sphinx", "sphinx_rtd_theme", "sphinxcontrib-napoleon"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # pydocstyle and pydoclint
+    # "D",
+    "DOC",
+    # flake8-use-pathlib
+    "PTH",
+    # flake8-logging
+    "LOG",
+    # flake8-no-pep420
+    "INP",
+    "PIE",
+    "T20",
+    # pytest
+    "PT",
 ]
-doc = [
-    "sphinx",
-    "sphinx_rtd_theme",
-    "sphinxcontrib-napoleon",
-]
+ignore = ["DOC501", "DOC201"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/*.py" = ["INP001"]
+"docs/**/*.py" = ["INP001"]
+
+[tool.pydoclint]
+style = "numpy"
+skip-checking-raises = true
 
 [tool.isort]
 profile = "black"
-multi_line_output=3
-include_trailing_comma=true
-force_grid_wrap=0
-use_parentheses=true
-line_length=88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 100
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
