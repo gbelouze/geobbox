@@ -11,7 +11,6 @@ import numpy as np
 import rasterio as rio
 import rasterio.warp as warp
 import shapely
-from rasterio.crs import CRS
 
 from .utm import _UTM_ZONE_LETTERS, UTM
 
@@ -34,29 +33,32 @@ Coordinate: TypeAlias = tuple[float, float]
 
 _EPSILON = 1e-10
 
-WGS84 = CRS.from_epsg(4326)
+WGS84 = rio.CRS.from_epsg(4326)
 
 
 @dataclass(frozen=True)
 class GeoBoundingBox:
     """A georeferenced bounding box.
 
-    This is a Coordinate Reference System (crs) and the bounding box's left, bottom,
-    right and top borders, expressed in that CRS.
+    This is a Coordinate Reference System (crs) and the bounding box's left, bottom, right and top
+    borders, expressed in that CRS.
 
     Attributes
     ----------
+
     left, bottom, right, top : float
         The borders of the bounding box.
+
     crs : CRS
         The CRS of the GeoBoundingBox. Defaults to WGS84.
+
     """
 
     left: float
     bottom: float
     right: float
     top: float
-    crs: CRS = WGS84
+    crs: rio.CRS = WGS84
 
     def __post_init__(self):
         if self.left > self.right:
@@ -66,7 +68,9 @@ class GeoBoundingBox:
 
     def __contains__(self, point: Coordinate) -> bool:
         """Whether a point is contained in the bounding box.
+
         Expects a point in northing/easting coordinate, in a CRS consistent with the bounding box.
+
         """
         northing, easting = point
         return self.left <= easting <= self.right and self.bottom <= northing <= self.left
@@ -76,8 +80,10 @@ class GeoBoundingBox:
 
         Returns
         -------
-        bbox: GeoBoundingBox
+
+        bbox : GeoBoundingBox
             The intersection of the bboxes expressed in the first one's CRS.
+
         """
         if other.crs != self.crs:
             log.warn("Intersection between bounding box in different CRS.")
@@ -102,6 +108,7 @@ class GeoBoundingBox:
 
         Yields
         ------
+
         left : float
         bottom : float
         right : float
@@ -117,30 +124,22 @@ class GeoBoundingBox:
 
     @property
     def ul(self) -> Coordinate:
-        """Compute the coordinate of the upper-left corner of a bounding box,
-        in northing/easting format.
-        """
+        """Upper-left corner of a bounding box, in northing/easting format."""
         return (self.top, self.left)
 
     @property
     def ur(self) -> Coordinate:
-        """Compute the coordinate of the upper-right corner of a bounding box,
-        in northing/easting format.
-        """
+        """Upper-right corner of a bounding box, in northing/easting format."""
         return (self.top, self.right)
 
     @property
     def ll(self) -> Coordinate:
-        """Compute the coordinate of the lower-left corner of a bounding box,
-        in northing/easting format.
-        """
+        """Lower-left corner of a bounding box, in northing/easting format."""
         return (self.bottom, self.left)
 
     @property
     def lr(self) -> Coordinate:
-        """Compute the coordinate of the lower-right corner of a bounding box,
-        in northing/easting format.
-        """
+        """Lower-right corner of a bounding box, in northing/easting format."""
         return (self.bottom, self.right)
 
     @property
@@ -149,8 +148,10 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         center: Coordinate
             The center of the bbox expressed in the same CRS.
+
         """
         return ((self.top + self.bottom) / 2, (self.left + self.right) / 2)
 
@@ -174,7 +175,7 @@ class GeoBoundingBox:
     @property
     def is_not_empty(self) -> bool:
         """Check if a bounding box has a non empty interior."""
-        return bool((self.right - self.left) > _EPSILON and (self.top - self.bottom) > _EPSILON)
+        return not self.is_empty
 
     def with_(
         self,
@@ -197,13 +198,16 @@ class GeoBoundingBox:
 
         Parameters
         ----------
+
         other : GeoBoundingBox
             An other bounding box, in the same CRS.
 
         Returns
         -------
+
         float
             The IoU, a value between 0 and 1.
+
         """
         inter = self & other
         i = inter.area
@@ -220,8 +224,10 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         bool
             True if the two bounding boxes have non empty intersection.
+
         """
         if other.crs != self.crs:
             log.warn(
@@ -242,13 +248,16 @@ class GeoBoundingBox:
 
         Parameters
         ----------
-        other : BoundingeBox
+
+        other : GeoBoundingBox
             An other bounding box, in the same CRS.
 
         Returns
         -------
+
         bool
             True if the first bounding box is fully contained in the other.
+
         """
         if self.crs != other.crs:
             log.warn(
@@ -266,12 +275,15 @@ class GeoBoundingBox:
 
         Parameters
         ----------
+
         buff : float
 
         Returns
         -------
+
         GeoBoundingBox
             The buffered bounding box.
+
         """
         if buff < 0:
             raise ValueError(f"Invalid buffer value {buff}. Expected a positive value.")
@@ -288,10 +300,12 @@ class GeoBoundingBox:
 
         Parameters
         ----------
+
         buff : float
 
         Returns
         -------
+
         GeoBoundingBox
             The unbuffered bounding box.
 
@@ -318,8 +332,10 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         ee.Geometry
             The polygon representing the bbox in Google Earth Engine, in the same CRS.
+
         """
         geom = ee.Geometry.Polygon(
             [
@@ -346,36 +362,40 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         shapely.Polygon
-            The shapely polygon representing the bbox coordinates in its CRS or WGS84
-            (depending on `in_native_crs`).
+            The shapely polygon representing the bbox coordinates in its CRS or WGS84 (depending on
+            `in_native_crs`).
 
         Warning
         -------
+
         Georeferencement information is lost. The shapely polygon is just a mathematical object.
+
         """
         bbox = self.transform(WGS84) if not in_native_crs else self
         return shapely.box(bbox.left, bbox.bottom, bbox.right, bbox.top)
 
     def to_latlon(self) -> tuple[Coordinate, Coordinate]:
-        """Convert a bounding box to a tuple of the form
-        (lat_min, lon_min), (lat_max, lon_max), as expected by folium.
+        """Convert a bounding box to a tuple of the form (lat_min, lon_min), (lat_max, lon_max),
+        as expected by folium.
 
         Returns
         -------
         (lat_min, lon_min), (lat_max, lon_max) : Coordinate, Coordinate
             Coordinates of the bottom left and top right box corners, in that order.
+
         """
         lon_min, lon_max = self.left, self.right
         lat_min, lat_max = self.bottom, self.top
         return ((lat_min, lon_min), (lat_max, lon_max))
 
-    def transform(self, dst_crs: CRS) -> Self:
+    def transform(self, dst_crs: rio.CRS) -> Self:
         """Transform a bounding box to `dst_crs`.
 
-        If mapping to the new CRS generates distortions, the smallest box encapsulating
-        the corners of the distorted box is returned. This is in general the smallest encapsulating
-        box of the distorted box.
+        If mapping to the new CRS generates distortions, the smallest box encapsulating the corners
+        of the distorted box is returned. This is in general the smallest encapsulating box of the
+        distorted box.
 
         Parameters
         ----------
@@ -384,8 +404,10 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         bbox: GeoBoundingBox
             Bounding box in `dst_crs`.
+
         """
         if not self.is_not_empty:
             log.warn("Transforming an empty GeoBoundingBox")
@@ -405,7 +427,9 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         height, width: int
+
         """
         _, meter_factor = self.crs.linear_units_factor
         w = meter_factor * (self.right - self.left) // scale
@@ -416,7 +440,7 @@ class GeoBoundingBox:
     def from_ee_geometry(cls, geometry: ee.Geometry) -> Self:
         coordinates = np.array(geometry.bounds().getInfo()["coordinates"][0])  # type: ignore[index]
         proj = geometry.projection().getInfo()["crs"]  # type: ignore[index]
-        crs = CRS.from_string(proj)
+        crs = rio.CRS.from_string(proj)
         return cls(
             left=coordinates[:, 0].min(),
             right=coordinates[:, 0].max(),
@@ -426,7 +450,7 @@ class GeoBoundingBox:
         )
 
     @classmethod
-    def from_latlon(cls, cmin: Coordinate, cmax: Coordinate, crs: CRS = WGS84) -> Self:
+    def from_latlon(cls, cmin: Coordinate, cmax: Coordinate, crs: rio.CRS = WGS84) -> Self:
         """Convert a bounding box of the form (lat_min, lon_min), (lat_max, lon_max),
         as expected by folium, to a GeoBoundingBox.
 
@@ -467,19 +491,23 @@ class GeoBoundingBox:
         )
 
     @classmethod
-    def from_rio(cls, bbox: rio.coords.BoundingBox, crs: CRS = WGS84) -> Self:
+    def from_rio(cls, bbox: rio.coords.BoundingBox, crs: rio.CRS = WGS84) -> Self:
         """Get a bounding box from a `rasterio` bounding box.
 
         Parameters
         ----------
-        bbox : rio.coords.BoundingBox
+
+        bbox : GeoBoundingBox
             A rasterio bounding box object.
-        crs : CRS (optional)
+
+        crs : CRS
             The CRS in which the bbox is expressed. Default is WGS84.
 
         Returns
         -------
+
         GeoBoundingBox
+
         """
         return cls(left=bbox.left, bottom=bbox.bottom, right=bbox.right, top=bbox.top, crs=crs)
 
@@ -494,8 +522,10 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         GeoBoundingBox
             The bounding box of the geodata contained in the file.
+
         """
         with rio.open(path) as data:
             return cls.from_rio(data.bounds, data.crs)
@@ -511,8 +541,10 @@ class GeoBoundingBox:
 
         Returns
         -------
+
         GeoBoundingBox
             The bounding box expressed in WGS84.
+
         """
         left = (utm.zone - 31) * 6
         right = left + 6
@@ -525,7 +557,9 @@ class GeoBoundingBox:
 
         Yields
         ------
+
         UTM
+
         """
         bbox = self.transform(WGS84)
         zone_left = int(bbox.left // 6) + 31
