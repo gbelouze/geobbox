@@ -5,10 +5,10 @@
     contain the root `toctree` directive.
 
 Welcome to GeoBbox's documentation!
-====================================
+===================================
 
-**GeoBbox** is a simple Python library to manipulate georeferenced bounding boxes.
-It integrates with popular GIS libraries (`gee`, `folium`, `rasterio`).
+**GeoBbox** is a simple Python library to manipulate georeferenced bounding boxes. It integrates
+with popular GIS libraries (`gee`, `folium`, `rasterio`).
 
 .. note::
 
@@ -26,7 +26,6 @@ API
 .. autosummary::
 
     geobbox
-
 
 Indices and tables
 ==================

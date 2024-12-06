@@ -1,5 +1,5 @@
 geobbox package
-================
+===============
 
 .. automodule:: geobbox
     :members:
