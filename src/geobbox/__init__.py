@@ -5,7 +5,7 @@ A python library for georeferenced bounding boxes.
 
 """
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 from .geobbox import GeoBoundingBox
 from .utm import UTM
