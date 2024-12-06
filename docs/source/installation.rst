@@ -1,10 +1,9 @@
 Installation
 ============
 
-Installation of the `GeoBbox` package is complicated by its dependency on `rasterio`
-which itself depends on `libgdal` and other C libraries. See
-https://rasterio.readthedocs.io/en/stable/installation.html for more details on
-installing rasterio.
+Installation of the `GeoBbox` package is complicated by its dependency on `rasterio` which itself
+depends on `libgdal` and other C libraries. See
+https://rasterio.readthedocs.io/en/stable/installation.html for more details on installing rasterio.
 
 Example with `conda`
 --------------------
@@ -23,14 +22,14 @@ Then, install normally from PyPI
 
 .. note::
 
-    GeoBbox requires Rasterio 1.4 or higher, which requires Python 3.9 or higher and
-    GDAL 3.3 or higher.
+    GeoBbox requires Rasterio 1.4 or higher, which requires Python 3.9 or higher and GDAL 3.3 or
+    higher.
 
 For developpers
 ---------------
 
-If you want to work on `GeoBbox`, clone the repository locally and optionally install
-the `[doc]` and `[dev]` dependencies.
+If you want to work on `GeoBbox`, clone the repository locally and optionally install the `[doc]`
+and `[dev]` dependencies.
 
 .. code-block:: console
 

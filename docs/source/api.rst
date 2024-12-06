@@ -2,6 +2,6 @@ API
 ===
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   apidoc/geobbox
+    apidoc/geobbox
