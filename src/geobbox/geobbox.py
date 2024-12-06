@@ -17,8 +17,10 @@ from .utm import _UTM_ZONE_LETTERS, UTM
 
 log = logging.getLogger(__name__)
 
-if (sys.version_info.major, sys.version_info.minor) < (3, 10):
-    from typing_extensions import Iterator, Optional, Self, TypeAlias
+if (sys.version_info.major, sys.version_info.minor) <= (3, 10):
+    from collections.abc import Iterator
+
+    from typing_extensions import Optional, Self, TypeAlias
 else:
     from typing import Iterator, Optional, Self, TypeAlias
 
@@ -68,8 +70,8 @@ class GeoBoundingBox:
         Expects a point in northing/easting coordinate, in a CRS consistent with the bounding box.
         """
         northing, easting = point
-        return (
-            self.left <= easting <= self.right and self.bottom <= northing <= self.left
+        return (self.left <= easting <= self.right) and (
+            self.bottom <= northing <= self.top
         )
 
     def __and__(self, other: Self) -> Self:

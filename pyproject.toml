@@ -57,29 +57,13 @@ use_parentheses=true
 line_length=88
 
 [tool.pytest.ini_options]
-testpaths = [
-    "tests",
-]
-
-[tool.black]
-line-length = 88
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+testpaths = ["tests"]
+log_cli = true
+log_cli_level = "DEBUG"
+log_level = "DEBUG"
 
 [tool.mypy]
-python_version = 3.11
+python_version = "3.11"
 warn_redundant_casts = true
 warn_unused_configs = true
 pretty = true
