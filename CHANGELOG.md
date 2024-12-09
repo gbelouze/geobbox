@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fixed" and "Security".
 
+## [0.1.0] - 2024-12-09
+
+### Changed
+
+- Add compatibility down to Python 3.10 [3fb6783](https://github.com/gbelouze/geobbox/commit/3fb67837fef2b3b46c573ffca20bfb6c4ab056e5)
+
 ## [0.0.4] - 2024-12-06
 
 ### Added

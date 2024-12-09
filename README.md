@@ -10,4 +10,17 @@
 
 A simple Python library to manipulate georeferenced bounding boxes.
 
+```python
+from geobbox import GeoBoundingBox
+from rasterio import CRS
+
+bbox = GeoBoundingBox(
+    left = 0,
+    right = 1,
+    bottom = 0,
+    right = 1,
+    crs = CRS.from_epsg(4326)
+)
+```
+
 Read the [docs](https://geobbox.readthedocs.io/en/latest/) for more details.
