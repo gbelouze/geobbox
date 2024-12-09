@@ -14,9 +14,10 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = { "file" = "LICENSE" }
 dynamic = ["version"]
 dependencies = ["earthengine-api", "numpy", "rasterio", "shapely>=2.0.6", "utm"]
