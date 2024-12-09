@@ -12,7 +12,7 @@ with popular GIS libraries (`gee`, `folium`, `rasterio`).
 
 .. note::
 
-    This project is still new and under active development. The API may break in the future.
+    This project is considered stable and API is backwards compatible starting from version `v0.1.0`
 
 .. toctree::
     :maxdepth: 1
