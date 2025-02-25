@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fixed" and "Security".
 
+## pre-release
+
+### Changed
+
+- Typecheck `GeoBoundingBox` as a tuple of 4 float [7f8482e](https://github.com/gbelouze/geobbox/commit/7f8482eec14e4b11d46b2d4f3dfa89ca46bbd4f2)
+
+### Fixed
+
+- Fixed `GeoBoundingBox.is_contained` [971cddd](https://github.com/gbelouze/geobbox/commit/971cddd5e3b9b5c7db8d6e699dbbf8370b040504)
+
 ## [0.1.0] - 2024-12-09
 
 ### Changed
