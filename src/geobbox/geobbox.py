@@ -5,12 +5,14 @@ import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import ee
 import numpy as np
 import rasterio as rio
 import rasterio.warp as warp
 import shapely
+from typing_extensions import override
 
 from .utm import _UTM_ZONE_LETTERS, UTM
 
@@ -35,9 +37,15 @@ _EPSILON = 1e-10
 
 WGS84 = rio.CRS.from_epsg(4326)
 
+# see https://stackoverflow.com/a/71699470/24033350
+if TYPE_CHECKING:
+    base = tuple[float, float, float, float]
+else:
+    base = object
+
 
 @dataclass(frozen=True)
-class GeoBoundingBox:
+class GeoBoundingBox(base):
     """A georeferenced bounding box.
 
     This is a Coordinate Reference System (crs) and the bounding box's left, bottom, right and top
@@ -66,7 +74,8 @@ class GeoBoundingBox:
         if self.bottom > self.top:
             raise ValueError(f"GeoBoundingBox is initialized with {self.bottom=} > {self.top=}")
 
-    def __contains__(self, point: Coordinate) -> bool:
+    @override
+    def __contains__(self, point: Coordinate) -> bool:  # type: ignore # pyright: ignore[reportIncompatibleMethodOverride]
         """Whether a point is contained in the bounding box.
 
         Expects a point in northing/easting coordinate, in a CRS consistent with the bounding box.
@@ -86,7 +95,7 @@ class GeoBoundingBox:
 
         """
         if other.crs != self.crs:
-            log.warn("Intersection between bounding box in different CRS.")
+            log.warning("Intersection between bounding box in different CRS.")
             other = other.transform(self.crs)
         if (
             self.right < other.left
@@ -103,24 +112,26 @@ class GeoBoundingBox:
             crs=self.crs,
         )
 
-    def __iter__(self):
-        """Iter over a GeoBoundingBox as if a (left, bottom, right, top) tuple
+    if not TYPE_CHECKING:
 
-        Yields
-        ------
+        def __iter__(self):
+            """Iter over a GeoBoundingBox as if a (left, bottom, right, top) tuple
 
-        left : float
-        bottom : float
-        right : float
-        top : float
+            Yields
+            ------
 
-        .. versionadded:: 0.0.2
+            left : float
+            bottom : float
+            right : float
+            top : float
 
-        """
-        yield self.left
-        yield self.bottom
-        yield self.right
-        yield self.top
+            .. versionadded:: 0.0.2
+
+            """
+            yield self.left
+            yield self.bottom
+            yield self.right
+            yield self.top
 
     @property
     def ul(self) -> Coordinate:
@@ -230,7 +241,7 @@ class GeoBoundingBox:
 
         """
         if other.crs != self.crs:
-            log.warn(
+            log.warning(
                 f"Intersection between bounding box in different CRS ({self.crs=}, {other.crs=})."
             )
             other = other.transform(self.crs)
@@ -260,14 +271,14 @@ class GeoBoundingBox:
 
         """
         if self.crs != other.crs:
-            log.warn(
+            log.warning(
                 "Containment test between bounding box in different CRS "
                 f"({self.crs=}, {other.crs=})."
             )
             other = other.transform(self.crs)
         return (
-            other.left < self.left < self.right < other.right
-            and other.bottom < self.bottom < self.top < other.top
+            other.left <= self.left <= self.right <= other.right
+            and other.bottom <= self.bottom <= self.top <= other.top
         )
 
     def buffer(self, buff: float) -> Self:
@@ -410,7 +421,7 @@ class GeoBoundingBox:
 
         """
         if not self.is_not_empty:
-            log.warn("Transforming an empty GeoBoundingBox")
+            log.warning("Transforming an empty GeoBoundingBox")
             return self.__class__(0, 0, 0, 0, dst_crs)
         left, bottom, right, top = warp.transform_bounds(
             self.crs, dst_crs, self.left, self.bottom, self.right, self.top

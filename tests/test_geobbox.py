@@ -61,13 +61,12 @@ def test_geobbox_intersection(geobbox):
 
 def test_geobbox_intersects(geobbox):
     ul_northing, ul_easting = geobbox.ul
-    geobbox_other = geobbox.buffer(1).with_(
-        left=ul_easting - 0.1, bottom=ul_northing - 0.1
-    )
+    geobbox_other = geobbox.buffer(1).with_(left=ul_easting - 0.1, bottom=ul_northing - 0.1)
     assert geobbox.intersects(geobbox_other)
 
 
 def test_is_contained(geobbox):
+    assert geobbox.is_contained(geobbox.buffer(0))
     assert geobbox.is_contained(geobbox.buffer(1))
     assert geobbox.unbuffer(0.1).is_contained(geobbox)
 
