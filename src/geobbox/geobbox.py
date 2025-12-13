@@ -74,6 +74,15 @@ class GeoBoundingBox(base):
         if self.bottom > self.top:
             raise ValueError(f"GeoBoundingBox is initialized with {self.bottom=} > {self.top=}")
 
+    def __repr__(self):
+        return (
+            f"GeoBoundingBox(left={self.left}, "
+            f"bottom={self.bottom}, "
+            f"right={self.right}, "
+            f"top={self.top}, "
+            f"crs=EPSG:{self.crs.to_epsg()})"
+        )
+
     @override
     def __contains__(self, point: Coordinate) -> bool:  # type: ignore # pyright: ignore[reportIncompatibleMethodOverride]
         """Whether a point is contained in the bounding box.
