@@ -276,9 +276,8 @@ class GeoBoundingBox(base):
                 f"({self.crs=}, {other.crs=})."
             )
             other = other.transform(self.crs)
-        return (
-            other.left <= self.left <= self.right <= other.right
-            and other.bottom <= self.bottom <= self.top <= other.top
+        return (other.left <= self.left <= self.right <= other.right) and (
+            other.bottom <= self.bottom <= self.top <= other.top
         )
 
     def buffer(self, buff: float) -> Self:
