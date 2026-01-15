@@ -39,7 +39,6 @@ def snap_to_grid(bbox: GeoBoundingBox, grid: int | tuple[int, int]) -> GeoBoundi
     -------
     GeoBoundingBox
         The bounding box inflated to snap to the grid.
-
     """
     xgrid, ygrid = as_resolution_tuple(grid)
     return bbox.with_(
@@ -73,6 +72,8 @@ def approximate_split(
     Notes
     -----
     if `resolution_grid` is provided, the resulting grid may be bigger than the original `bbox`.
+
+    .. versionadded:: 0.1.1
     """
     resolution_grid = as_resolution_tuple(resolution_grid) if resolution_grid is not None else None
 
@@ -128,6 +129,8 @@ def overlapping_split(
     Notes
     -----
     if `resolution_grid` is provided, the resulting grid may be bigger than the original `bbox`.
+
+    .. versionadded:: 0.1.1
     """
     resolution_grid = as_resolution_tuple(resolution_grid) if resolution_grid is not None else None
     size_eff = size * (1 - fraction_overlap)
