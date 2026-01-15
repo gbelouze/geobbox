@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 import ee
 import numpy as np
 import rasterio as rio
+import rasterio.coords as riocoords
 import rasterio.warp as warp
 import shapely
 from typing_extensions import override
@@ -346,7 +347,7 @@ class GeoBoundingBox(base):
             top=self.top - buff,
         )
 
-    def to_ee_geometry(self) -> ee.Geometry:
+    def to_ee_geometry(self) -> ee.geometry.Geometry:
         """Translate a bounding box as a ee.Geometry polygon.
 
         Returns
@@ -356,7 +357,7 @@ class GeoBoundingBox(base):
             The polygon representing the bbox in Google Earth Engine, in the same CRS.
 
         """
-        geom = ee.Geometry.Polygon(
+        geom = ee.geometry.Geometry.Polygon(
             [
                 [
                     [self.left, self.top],
@@ -456,7 +457,7 @@ class GeoBoundingBox(base):
         return (h, w)
 
     @classmethod
-    def from_ee_geometry(cls, geometry: ee.Geometry) -> Self:
+    def from_ee_geometry(cls, geometry: ee.geometry.Geometry) -> Self:
         coordinates = np.array(geometry.bounds().getInfo()["coordinates"][0])  # type: ignore[index]
         proj = geometry.projection().getInfo()["crs"]  # type: ignore[index]
         crs = rio.CRS.from_string(proj)
@@ -489,7 +490,7 @@ class GeoBoundingBox(base):
         return cls(left=cmin[1], right=cmax[1], bottom=cmin[0], top=cmax[0], crs=crs)
 
     @classmethod
-    def ee_image_bbox(cls, image: ee.Image) -> Self:
+    def ee_image_bbox(cls, image: ee.image.Image) -> Self:
         """Compute the bounding box of a GEE image in WGS84 CRS.
 
         Parameters
@@ -510,7 +511,7 @@ class GeoBoundingBox(base):
         )
 
     @classmethod
-    def from_rio(cls, bbox: rio.coords.BoundingBox, crs: rio.CRS = WGS84) -> Self:
+    def from_rio(cls, bbox: riocoords.BoundingBox, crs: rio.CRS = WGS84) -> Self:
         """Get a bounding box from a `rasterio` bounding box.
 
         Parameters
