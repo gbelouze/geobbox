@@ -79,10 +79,10 @@ def approximate_split(
 
     if resolution_grid is not None:
         bbox = snap_to_grid(bbox, resolution_grid)
-        stridex = _ceil_resolution_grid(minimal_size, resolution_grid[0])
-        stridey = _ceil_resolution_grid(minimal_size, resolution_grid[1])
-        nx_split = max(1, int((bbox.right - bbox.left) // stridex))
-        ny_split = max(1, int((bbox.top - bbox.bottom) // stridey))
+        nx_split = max(1, int((bbox.right - bbox.left) // minimal_size))
+        ny_split = max(1, int((bbox.top - bbox.bottom) // minimal_size))
+        stridex = _ceil_resolution_grid((bbox.right - bbox.left) / nx_split, resolution_grid[0])
+        stridey = _ceil_resolution_grid((bbox.top - bbox.bottom) / ny_split, resolution_grid[0])
     else:
         nx_split = max(1, int((bbox.right - bbox.left) // minimal_size))
         ny_split = max(1, int((bbox.top - bbox.bottom) // minimal_size))
