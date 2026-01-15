@@ -4,6 +4,8 @@ data/*
 notebooks/
 _tests/
 .rsync_ignore.txt
+uv.lock
+.venv
 
 # docs
 # docs/source/generated
