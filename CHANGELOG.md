@@ -10,6 +10,10 @@ Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fi
 
 ## pre-release
 
+### Added
+
+- `approximate_split` and `overlapping_split` utilities [5db2e0e](https://github.com/gbelouze/geobbox/commit/5db2e0e5767efa1f7124936e7d4578b57cac87d3)
+
 ### Changed
 
 - Typecheck `GeoBoundingBox` as a tuple of 4 float [7f8482e](https://github.com/gbelouze/geobbox/commit/7f8482eec14e4b11d46b2d4f3dfa89ca46bbd4f2)
@@ -17,6 +21,7 @@ Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fi
 ### Fixed
 
 - Fixed `GeoBoundingBox.is_contained` [971cddd](https://github.com/gbelouze/geobbox/commit/971cddd5e3b9b5c7db8d6e699dbbf8370b040504)
+- Make `pyright` happy [e6daea6](https://github.com/gbelouze/geobbox/commit/e6daea6eb7b466876897b495ed712edab1044ded)
 
 ## [0.1.0] - 2024-12-09
 
