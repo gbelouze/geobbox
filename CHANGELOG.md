@@ -22,7 +22,8 @@ Each release can have sections: "Added", "Changed", "Deprecated", "Removed", "Fi
 
 ### Changed
 
-- Typecheck `GeoBoundingBox` as a tuple of 4 float [7f8482e](https://github.com/gbelouze/geobbox/commit/7f8482eec14e4b11d46b2d4f3dfa89ca46bbd4f2)
+- Typecheck with `ty` [2de2a24](https://github.com/gbelouze/geobbox/commit/2de2a24eea7865d1c9902d0e46d113982d02a272)
+- Typecheck `GeoBoundingBox` unpacking [2de2a24](https://github.com/gbelouze/geobbox/commit/2de2a24eea7865d1c9902d0e46d113982d02a272)
 
 ### Fixed
 
