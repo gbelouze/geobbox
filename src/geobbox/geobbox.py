@@ -5,7 +5,6 @@ import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import ee
 import numpy as np
@@ -38,15 +37,9 @@ _EPSILON = 1e-10
 
 WGS84 = rio.CRS.from_epsg(4326)
 
-# see https://stackoverflow.com/a/71699470/24033350
-if TYPE_CHECKING:
-    base = tuple[float, float, float, float]
-else:
-    base = object
-
 
 @dataclass(frozen=True)
-class GeoBoundingBox(base):
+class GeoBoundingBox:
     """A georeferenced bounding box.
 
     This is a Coordinate Reference System (crs) and the bounding box's left, bottom, right and top
@@ -122,26 +115,24 @@ class GeoBoundingBox(base):
             crs=self.crs,
         )
 
-    if not TYPE_CHECKING:
+    def __iter__(self) -> Iterator[float]:
+        """Iter over a GeoBoundingBox as if a (left, bottom, right, top) tuple
 
-        def __iter__(self):
-            """Iter over a GeoBoundingBox as if a (left, bottom, right, top) tuple
+        Yields
+        ------
 
-            Yields
-            ------
+        left : float
+        bottom : float
+        right : float
+        top : float
 
-            left : float
-            bottom : float
-            right : float
-            top : float
+        .. versionadded:: 0.0.2
 
-            .. versionadded:: 0.0.2
-
-            """
-            yield self.left
-            yield self.bottom
-            yield self.right
-            yield self.top
+        """
+        yield self.left
+        yield self.bottom
+        yield self.right
+        yield self.top
 
     @property
     def ul(self) -> Coordinate:
@@ -370,7 +361,7 @@ class GeoBoundingBox(base):
             proj=f"EPSG:{self.crs.to_epsg()}",
             evenOdd=False,
         )
-        return ee.Feature(geom, {}).geometry()  # type: ignore[no-any-return]
+        return ee.Feature(geom, {}).geometry()
 
     def to_shapely_polygon(self, in_native_crs: bool = False) -> shapely.Polygon:
         """Translate a bounding box as a ee.Geometry polygon.

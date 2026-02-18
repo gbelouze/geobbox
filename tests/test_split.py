@@ -1,5 +1,5 @@
 import pytest
-from rasterio.crs import CRS
+from rasterio import CRS
 
 from geobbox import GeoBoundingBox, approximate_split, overlapping_split
 

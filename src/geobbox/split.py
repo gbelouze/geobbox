@@ -20,7 +20,10 @@ T = TypeVar("T")
 
 def as_resolution_tuple(resolution: T | tuple[T, T]) -> tuple[T, T]:
     if isinstance(resolution, tuple):
-        return resolution
+        assert (
+            len(resolution) == 2
+        ), f"Got a resolution tuple with {len(resolution)} elements instead of 2."
+        return resolution  # ty:ignore[invalid-return-type]
     return (resolution, resolution)
 
 

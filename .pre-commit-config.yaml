@@ -25,8 +25,10 @@ repos:
     rev: 7.1.0
     hooks:
       - id: flake8
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.13.0
+  - repo: local
     hooks:
-      - id: mypy
-        additional_dependencies: ["earthengine-api"]
+      - id: ty
+        name: ty check
+        entry: uv run --active ty check
+        language: python
+        files: '.*\.py'
