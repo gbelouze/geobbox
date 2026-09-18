@@ -24,3 +24,7 @@ bbox = GeoBoundingBox(
 ```
 
 Read the [docs](https://geobbox.readthedocs.io/en/latest/) for more details.
+
+# Other libraries
+
+If you need anything more than boxes, then you'll want to use [odc.geo](https://github.com/opendatacube/odc-geo). In fact, you'll probably want to use it even for bboxes only.
